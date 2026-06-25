@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Loan Calc 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #0f172a; color: white; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6">
+    <div class="glass p-8 rounded-3xl w-full max-w-md shadow-2xl">
+        <h1 class="text-3xl font-semibold mb-2">AI Calculator <span class="text-lime-400">.</span></h1>
+        <p class="text-slate-400 mb-8 text-sm uppercase tracking-widest">Vibe-coding Edition</p>
+        
+        <div class="space-y-4">
+            <div>
+                <label class="block text-xs text-slate-500 mb-1">СУММА КРЕДИТА (₽)</label>
+                <input id="amount" type="number" value="500000" class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-lime-400 transition-all">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs text-slate-500 mb-1">СТАВКА (%)</label>
+                    <input id="rate" type="number" value="15" class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-lime-400">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-500 mb-1">СРОК (МЕС.)</label>
+                    <input id="months" type="number" value="36" class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-lime-400">
+                </div>
+            </div>
+            <button onclick="calculate()" class="w-full bg-lime-400 text-slate-900 font-bold py-4 rounded-2xl hover:bg-lime-300 transform active:scale-95 transition-all mt-4">РАССЧИТАТЬ ПЛАТЕЖ</button>
+        </div>
+
+        <div id="result" class="mt-10 hidden border-t border-slate-800 pt-6">
+            <p class="text-slate-400 text-sm mb-1">ЕЖЕМЕСЯЧНЫЙ ПЛАТЕЖ</p>
+            <h2 id="monthly" class="text-4xl font-bold text-white mb-4">0 ₽</h2>
+            <div class="flex justify-between text-sm">
+                <span class="text-slate-500">Общая переплата:</span>
+                <span id="overpayment" class="text-lime-400 font-semibold">0 ₽</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function calculate() {
+            const data = {
+                amount: Number(document.getElementById('amount').value),
+                rate: Number(document.getElementById('rate').value),
+                months: Number(document.getElementById('months').value)
+            };
+            
+            const response = await fetch('/calculate', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            
+            const result = await response.json();
+            document.getElementById('result').classList.remove('hidden');
+            document.getElementById('monthly').innerText = result.monthlyPayment.toLocaleString() + ' ₽';
+            document.getElementById('overpayment').innerText = result.totalOverpayment.toLocaleString() + ' ₽';
+        }
+    </script>
+</body>
+</html>
